@@ -9,3 +9,6 @@ Config.MugShotCamera = {
     z = 34.10,
     r = {x = 0.0, y = 0.0, z = 110.33}
 }
+Config.BoardHeader = "Los Santos Police Department"
+Config.WaitTime = 2000 -- Time before and after the photo is taken. Decreasing this value might result in some angles being skiped.
+Config.Photos = 3 -- Front, Back Side. Use 4 for both sides

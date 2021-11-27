@@ -28,10 +28,10 @@ end
 local function PhotoProcess(suspect)
     PhotoTaken = false
     local rotation = Config.MugshotHeading
-    for photo = 1, 3, 1 do
-        Wait(2000)
+    for photo = 1, Config.Photos, 1 do
+        Wait(Config.WaitTime)
         TakeMugShot()
-        Wait(2000)
+        Wait(Config.WaitTime)
         rotation = rotation - 90.0
         SetEntityHeading(suspect, rotation)
     end
@@ -131,10 +131,10 @@ local function PrepBoard()
 end
 
 local function MakeBoard()
-    title = playerData.charinfo.birthdate
+    title = Config.BoardHeader
     center = playerData.charinfo.firstname.. " ".. playerData.charinfo.lastname
     footer = playerData.citizenid
-    header = ""
+    header = playerData.charinfo.birthdate
 	CallScaleformMethod(board_scaleform, 'SET_BOARD', title, center, footer, header, 0, 1337, 116)
 end
 
@@ -172,7 +172,7 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function(suspect)
             Citizen.Wait(100)
         end
         PrepBoard()
-        Wait(50)
+        Wait(100)
         MakeBoard()
         MugShotCamera()
         MugshotArray = {}
