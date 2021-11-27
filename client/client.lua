@@ -1,10 +1,9 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local mugshotInProgress, createdCamera, MugshotArray, playerData = false, 0, {}, nil
-local handle, board
+local handle, board, board_scaleform, overlay
 local player = GetPlayerPed(PlayerPedId())
 local playerCoords = GetEntityCoords(player)
 local board_pos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
-local board_scaleform, overlay
 
 local function MugShotInProgress()
     CreateThread(function()
@@ -155,9 +154,21 @@ local function PlayerBoard()
 	AttachEntityToEntity(board, ped, GetPedBoneIndex(ped, 28422), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 2, 1)
 end
 
+if Config.TestCommand then
+    RegisterCommand("testmugshot", function(source)
+        local player, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
+        if player ~= -1 and distance < 2.0 then
+            local playerId = GetPlayerServerId(player)
+            TriggerServerEvent('cqc-mugshot:server:triggerSuspect', playerId)
+        end
+    end, false)
+end
+
 RegisterNetEvent('cqc-mugshot:client:trigger', function(suspect)
+    print("triggered")
     CreateThread(function()
         playerData = QBCore.Functions.GetPlayerData()
+        local citizenid = playerData.citizenid
         local animDict = 'mp_character_creation@lineup@male_a'
         RequestAnimDict(animDict)
         while not HasAnimDictLoaded(animDict) do
@@ -189,6 +200,9 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function(suspect)
             DeleteObject(overlay)
             DeleteObject(board)
             handle = nil
+        end
+        if Config.CQCMDT then
+            TriggerServerEvent('cqc-mugshot:server:MDTupload', playerData.citizenid, MugshotArray)
         end
     end)
 end)
