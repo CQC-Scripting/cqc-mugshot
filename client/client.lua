@@ -1,6 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local mugshotInProgress, createdCamera, MugshotArray, playerData = false, 0, {}, nil
-local handle, board, board_scaleform, overlay
+local handle, board, board_scaleform, overlay, ped
 local player = GetPlayerPed(PlayerPedId())
 local playerCoords = GetEntityCoords(player)
 local board_pos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
@@ -23,7 +23,7 @@ local function TakeMugShot()
     end)
 end
 
-local function PhotoProcess(suspect)
+local function PhotoProcess(ped)
     PhotoTaken = false
     local rotation = Config.MugshotHeading
     for photo = 1, Config.Photos, 1 do
@@ -31,7 +31,7 @@ local function PhotoProcess(suspect)
         TakeMugShot()
         Wait(Config.WaitTime)
         rotation = rotation - 90.0
-        SetEntityHeading(suspect, rotation)
+        SetEntityHeading(ped, rotation)
     end
 end
 
@@ -138,7 +138,6 @@ end
 
 
 local function PlayerBoard()
-	local ped = PlayerPedId()
 	RequestModel(`prop_police_id_board`)
 	RequestModel(`prop_police_id_text`)
 	RequestAnimDict(lineup_male)
@@ -148,9 +147,9 @@ local function PlayerBoard()
 	AttachEntityToEntity(overlay, board, -1, 4103, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
 	SetModelAsNoLongerNeeded(`prop_police_id_board`)
 	SetModelAsNoLongerNeeded(`prop_police_id_text`)
+    SetCurrentPedWeapon(ped, `weapon_unarmed`, 1)
 	ClearPedWetness(ped)
 	ClearPedBloodDamage(ped)
-	SetCurrentPedWeapon(ped, `weapon_unarmed`, 1)
 	AttachEntityToEntity(board, ped, GetPedBoneIndex(ped, 28422), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 2, 1)
 end
 
@@ -165,7 +164,7 @@ if Config.TestCommand then
 end
 
 RegisterNetEvent('cqc-mugshot:client:trigger', function(suspect)
-    print("triggered")
+    ped = PlayerPedId()
     CreateThread(function()
         playerData = QBCore.Functions.GetPlayerData()
         local citizenid = playerData.citizenid
@@ -180,23 +179,23 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function(suspect)
         MugShotCamera()
         MugshotArray = {}
         mugshotInProgress = true
-        local suspect = PlayerPedId()
-        SetEntityCoords(suspect, Config.MugshotLocation.x, Config.MugshotLocation.y, Config.MugshotLocation.z)
-        SetEntityHeading(suspect, Config.MugshotHeading)
+        SetEntityCoords(ped, Config.MugshotLocation.x, Config.MugshotLocation.y, Config.MugshotLocation.z)
+        SetEntityHeading(ped, Config.MugshotHeading)
         MugShotInProgress()
         PlayerBoard()
-        TaskPlayAnim(suspect, animDict, "loop_raised", 8.0, 8.0, -1, 49, 0, false, false, false)
-        PhotoProcess(suspect)
-        FreezeEntityPosition(suspect, true)
+        TaskPlayAnim(ped, animDict, "loop_raised", 8.0, 8.0, -1, 49, 0, false, false, false)
+        PhotoProcess(ped)
+        FreezeEntityPosition(ped, true)
         mugshotInProgress = false
         if createdCamera ~= 0 then
             DestroyCam(createdCamera, 0)
             RenderScriptCams(0, 0, 1, 1, 1)
-            SetFocusEntity(GetPlayerPed(PlayerId()))
-            ClearPedTasksImmediately(PlayerPedId())
-            FreezeEntityPosition(PlayerPedId(), false)
+            SetFocusEntity(GetPlayerPed(ped))
+            ClearPedTasksImmediately(ped)
+            FreezeEntityPosition(ped, false)
+            SetEntityHeading(ped, Config.MugshotHeading)
             createdCamera = 0
-            ClearPedSecondaryTask(GetPlayerPed(-1))
+            ClearPedSecondaryTask(GetPlayerPed(ped))
             DeleteObject(overlay)
             DeleteObject(board)
             handle = nil
