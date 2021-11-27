@@ -5,5 +5,4 @@ end)
 
 RegisterNetEvent('cqc-mugshot:server:MDTupload', function(citizenid, MugShotURLs)
     MugShots[citizenid] = MugShotURLs
-    TriggerClientEvent('table', -1, MugShots)
 end)
