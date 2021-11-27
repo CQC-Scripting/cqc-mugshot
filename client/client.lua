@@ -1,11 +1,10 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local mugshotInProgress, createdCamera, MugshotArray, playerData = false, 0, {}, nil
 local handle, board
-local board_model, player = `prop_police_id_board`, GetPlayerPed(PlayerPedId())
+local player = GetPlayerPed(PlayerPedId())
 local playerCoords = GetEntityCoords(player)
 local board_pos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
 local board_scaleform, overlay
-local overlay_model = `prop_police_id_text`
 
 local function MugShotInProgress()
     CreateThread(function()
@@ -112,7 +111,7 @@ end
 local function PrepBoard()
     CreateThread(function()
         board_scaleform = LoadScaleform("mugshot_board_01")
-        handle = CreateNamedRenderTargetForModel("ID_Text", overlay_model)
+        handle = CreateNamedRenderTargetForModel("ID_Text", `prop_police_id_text`)
     
         while handle do
             HideHudAndRadarThisFrame()
@@ -141,25 +140,19 @@ end
 
 local function PlayerBoard()
 	local ped = PlayerPedId()
-
-	RequestModel(board_model)
-	RequestModel(overlay_model)
+	RequestModel(`prop_police_id_board`)
+	RequestModel(`prop_police_id_text`)
 	RequestAnimDict(lineup_male)
-
-	while not HasModelLoaded(board_model) or not HasModelLoaded(overlay_model) do Wait(1) end
-
-	board = CreateObject(board_model, board_pos, false, true, false)
-	overlay = CreateObject(overlay_model, board_pos, false, true, false)
+	while not HasModelLoaded(`prop_police_id_board`) or not HasModelLoaded(`prop_police_id_text`) do Wait(1) end
+	board = CreateObject(`prop_police_id_board`, board_pos, false, true, false)
+	overlay = CreateObject(`prop_police_id_text`, board_pos, false, true, false)
 	AttachEntityToEntity(overlay, board, -1, 4103, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
-	SetModelAsNoLongerNeeded(board_model)
-	SetModelAsNoLongerNeeded(overlay_model)
-
+	SetModelAsNoLongerNeeded(`prop_police_id_board`)
+	SetModelAsNoLongerNeeded(`prop_police_id_text`)
 	ClearPedWetness(ped)
 	ClearPedBloodDamage(ped)
-	ClearPlayerWantedLevel(PlayerId())
-	SetCurrentPedWeapon(ped, GetHashKey("weapon_unarmed"), 1)
+	SetCurrentPedWeapon(ped, `weapon_unarmed`, 1)
 	AttachEntityToEntity(board, ped, GetPedBoneIndex(ped, 28422), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 2, 1)
-
 end
 
 RegisterNetEvent('cqc-mugshot:client:trigger', function(suspect)
@@ -168,8 +161,7 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function(suspect)
         local animDict = 'mp_character_creation@lineup@male_a'
         RequestAnimDict(animDict)
         while not HasAnimDictLoaded(animDict) do
-            print("waiting")
-            Citizen.Wait(100)
+            Wait(100)
         end
         PrepBoard()
         Wait(100)
