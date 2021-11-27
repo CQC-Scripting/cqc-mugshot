@@ -40,17 +40,13 @@ local function MugShotCamera()
     y = Config.MugShotCamera.y
     z = Config.MugShotCamera.z
     r = Config.MugShotCamera.r
-
     if createdCamera ~= 0 then
         DestroyCam(createdCamera, 0)
         createdCamera = 0
     end
-
     local cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", 1)
     SetCamCoord(cam, x, y, z)
     SetCamRot(cam, r.x, r.y, r.z, 2)
-
-    
     RenderScriptCams(1, 0, 0, 1, 1)
     Wait(250)
     createdCamera = cam
@@ -67,28 +63,23 @@ local function CreateNamedRenderTargetForModel(name, model)
 	if IsNamedRendertargetRegistered(name) then
 		handle = GetNamedRendertargetRenderId(name)
 	end
-
 	return handle
 end
 
 local function LoadScaleform (scaleform)
 	local handle = RequestScaleformMovie(scaleform)
-
 	if handle ~= 0 then
 		while not HasScaleformMovieLoaded(handle) do
 			Wait(0)
 		end
 	end
-
 	return handle
 end
 
 local function CallScaleformMethod (scaleform, method, ...)
 	local t
 	local args = { ... }
-
 	BeginScaleformMovieMethod(scaleform, method)
-
 	for k, v in ipairs(args) do
 		t = type(v)
 		if t == 'string' then
@@ -103,7 +94,6 @@ local function CallScaleformMethod (scaleform, method, ...)
 			PushScaleformMovieMethodParameterBool(v)
 		end
 	end
-
 	EndScaleformMovieMethod()
 end
 
@@ -111,7 +101,6 @@ local function PrepBoard()
     CreateThread(function()
         board_scaleform = LoadScaleform("mugshot_board_01")
         handle = CreateNamedRenderTargetForModel("ID_Text", `prop_police_id_text`)
-    
         while handle do
             HideHudAndRadarThisFrame()
             SetTextRenderId(handle)
@@ -120,7 +109,6 @@ local function PrepBoard()
             DrawScaleformMovie(board_scaleform, 0.405, 0.37, 0.81, 0.74, 255, 255, 255, 255, 0)
             SetScriptGfxDrawBehindPausemenu(0)
             SetTextRenderId(GetDefaultScriptRendertargetRenderId())
-    
             SetScriptGfxDrawBehindPausemenu(1)
             SetScriptGfxDrawBehindPausemenu(0)
             Wait(0)
