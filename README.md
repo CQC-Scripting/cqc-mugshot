@@ -1,4 +1,4 @@
-# CC-FUEL
+# CQC-MUGSHOT
 
 CQC-Mugshot is a mugshot system for use with QB servers to allow players to take pictures of suspects have them uploaded to a webhook.
 <br>
