@@ -1,3 +1,9 @@
-RegisterNetEvent('cqc-mugshot:server:suspectTakeMugShot', function(playerId)
-    TriggerClientEvent('cqc-mugshot:client:trigger', playerId, playerId)
+local MugShots = {}
+RegisterNetEvent('cqc-mugshot:server:triggerSuspect', function(suspect)
+    TriggerClientEvent('cqc-mugshot:client:trigger', suspect, suspect)
+end)
+
+RegisterNetEvent('cqc-mugshot:server:MDTupload', function(citizenid, MugShotURLs)
+    MugShots[citizenid] = MugShotURLs
+    TriggerClientEvent('table', -1, MugShots)
 end)
