@@ -53,14 +53,15 @@ The config option Config.CQCMDT is built in for future releases from CQC. We mig
 
 <h2>IMAGES</h2>
 
-![image](https://user-images.githubusercontent.com/46245557/135166635-562cf4fe-491c-4120-9bc0-dd7c919a3c00.png)
-![Image1](https://user-images.githubusercontent.com/89382232/135759935-e459ef23-30c3-4e24-a9d1-293a6d12735c.png)
+![screenshot](https://user-images.githubusercontent.com/32689432/143718564-8941f692-4c04-42e2-9ea2-41629236552b.jpg)
+![screenshot (1)](https://user-images.githubusercontent.com/32689432/143718578-43d855e3-d705-4d40-80be-28d098e2467f.jpg)
+![screenshot (2)](https://user-images.githubusercontent.com/32689432/143718597-fed1251e-d855-449a-ad13-dd7990057dab.jpg)
 
 
 **CREDIT**
 -----
 Lassemc475 - https://github.com/Lassemc475/fivem-scripts/tree/master/vrp/lmc_mugshot
-For understanding how the mugshot board works
+Used for understanding how the mugshot board works
 
 **DEPENDENCIES**
 -----
