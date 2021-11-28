@@ -1,9 +1,29 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local mugshotInProgress, createdCamera, MugshotArray, playerData = false, 0, {}, nil
-local handle, board, board_scaleform, overlay, ped
+local handle, board, board_scaleform, overlay, ped, x, y, z, r, suspectheading, suspectx, suspecty, suspectz
 local player = GetPlayerPed(PlayerPedId())
 local playerCoords = GetEntityCoords(player)
 local board_pos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
+
+if Config.CustomMLO then
+    x = Config.MugShotCamera.x
+    y = Config.MugShotCamera.y
+    z = Config.MugShotCamera.z
+    r = Config.MugShotCamera.r
+    suspectheading = Config.MugshotSuspectHeading
+    suspectx = Config.MugshotLocation.x
+    suspecty = Config.MugshotLocation.y
+    suspectz = Config.MugshotLocation.z
+else
+    x = 403.0
+    y = -998.08
+    z = -98.5
+    r = {x = 0.0, y = 0.0, z = 359.66}
+    suspectheading = 179.99
+    suspectx = 403.01
+    suspecty = -996.3
+    suspectz = -100.0
+end
 
 local function TakeMugShot()
     exports['screenshot-basic']:requestScreenshotUpload(Config.Webhook, 'files[]', {encoding = 'jpg'}, function(data)
@@ -13,7 +33,7 @@ local function TakeMugShot()
 end
 
 local function PhotoProcess(ped)
-    local rotation = Config.MugshotSuspectHeading
+    local rotation = suspectheading
     for photo = 1, Config.Photos, 1 do
         Wait(Config.WaitTime)
         TakeMugShot()
@@ -24,10 +44,6 @@ local function PhotoProcess(ped)
 end
 
 local function MugShotCamera()
-    x = Config.MugShotCamera.x
-    y = Config.MugShotCamera.y
-    z = Config.MugShotCamera.z
-    r = Config.MugShotCamera.r
     if createdCamera ~= 0 then
         DestroyCam(createdCamera, 0)
         createdCamera = 0
@@ -152,6 +168,7 @@ end
 
 RegisterNetEvent('cqc-mugshot:client:trigger', function()
     ped = PlayerPedId()
+    pedcoords = GetEntityCoords(ped)
     CreateThread(function()
         playerData = QBCore.Functions.GetPlayerData()
         MugshotArray, mugshotInProgress = {}, true
@@ -165,18 +182,22 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
         Wait(250)
         MakeBoard()
         MugShotCamera()
-        SetEntityCoords(ped, Config.MugshotLocation.x, Config.MugshotLocation.y, Config.MugshotLocation.z)
-        SetEntityHeading(ped, Config.MugshotSuspectHeading)
+        SetEntityCoords(ped, suspectx, suspecty, suspectz)
+        SetEntityHeading(ped, suspectheading)
         PlayerBoard()
         TaskPlayAnim(ped, animDict, "loop_raised", 8.0, 8.0, -1, 49, 0, false, false, false)
         PhotoProcess(ped)
         if createdCamera ~= 0 then
             DestoryCamera()
-            SetEntityHeading(ped, Config.MugshotSuspectHeading)
+            SetEntityHeading(ped, suspectheading)
             ClearPedSecondaryTask(GetPlayerPed(ped))
         end
         if Config.CQCMDT then
             TriggerServerEvent('cqc-mugshot:server:MDTupload', playerData.citizenid, MugshotArray)
+        end
+        if Config.CustomMLO == false then
+            print(pedcoords)
+            SetEntityCoords(ped, pedcoords.x, pedcoords.y, pedcoords.z)
         end
         mugshotInProgress = false
     end)
