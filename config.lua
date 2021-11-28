@@ -3,6 +3,7 @@ Config = {}
 Config.Webhook = '' -- Images will be uploaded here
 Config.TestCommand = false -- Use this when testing /testmugshot
 
+Config.CustomMLO = false -- If you use a MLO use the options below to change the camera location. Otherwise it will use the default IPL for the mugshot location
 Config.MugshotLocation = vector3(-559.81, -132.68, 32.75) -- Location of the Suspect
 Config.MugshotSuspectHeading = 291.18 -- Direction Suspsect is facing
 Config.MugShotCamera = {
