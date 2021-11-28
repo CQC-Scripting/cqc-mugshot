@@ -13,7 +13,7 @@ local function TakeMugShot()
 end
 
 local function PhotoProcess(ped)
-    local rotation = Config.MugshotHeading
+    local rotation = Config.MugshotSuspectHeading
     for photo = 1, Config.Photos, 1 do
         Wait(Config.WaitTime)
         TakeMugShot()
@@ -166,13 +166,13 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
         MakeBoard()
         MugShotCamera()
         SetEntityCoords(ped, Config.MugshotLocation.x, Config.MugshotLocation.y, Config.MugshotLocation.z)
-        SetEntityHeading(ped, Config.MugshotHeading)
+        SetEntityHeading(ped, Config.MugshotSuspectHeading)
         PlayerBoard()
         TaskPlayAnim(ped, animDict, "loop_raised", 8.0, 8.0, -1, 49, 0, false, false, false)
         PhotoProcess(ped)
         if createdCamera ~= 0 then
             DestoryCamera()
-            SetEntityHeading(ped, Config.MugshotHeading)
+            SetEntityHeading(ped, Config.MugshotSuspectHeading)
             ClearPedSecondaryTask(GetPlayerPed(ped))
         end
         if Config.CQCMDT then

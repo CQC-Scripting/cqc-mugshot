@@ -4,7 +4,7 @@ Config.Webhook = '' -- Images will be uploaded here
 Config.TestCommand = false -- Use this when testing /testmugshot
 
 Config.MugshotLocation = vector3(-559.81, -132.68, 32.75) -- Location of the Suspect
-Config.MugshotHeading = 291.18 -- Direction Suspsect is facing
+Config.MugshotSuspectHeading = 291.18 -- Direction Suspsect is facing
 Config.MugShotCamera = {
     x = -558.44,
     y = -132.23,
