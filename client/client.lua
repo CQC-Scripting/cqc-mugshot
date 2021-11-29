@@ -134,16 +134,14 @@ local function MakeBoard()
 	CallScaleformMethod(board_scaleform, 'SET_BOARD', title, center, footer, header, 0, 1337, 116)
 end
 
-
 local function PlayerBoard()
     local playerCoords = GetEntityCoords(ped)
-    board_pos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
 	RequestModel(`prop_police_id_board`)
 	RequestModel(`prop_police_id_text`)
 	RequestAnimDict(lineup_male)
 	while not HasModelLoaded(`prop_police_id_board`) or not HasModelLoaded(`prop_police_id_text`) do Wait(1) end
-	board = CreateObject(`prop_police_id_board`, board_pos, true, true, false)
-	overlay = CreateObject(`prop_police_id_text`, board_pos, true, true, false)
+	board = CreateObject(`prop_police_id_board`, playerCoords, true, true, false)
+	overlay = CreateObject(`prop_police_id_text`, playerCoords, true, true, false)
 	AttachEntityToEntity(overlay, board, -1, 4103, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
 	SetModelAsNoLongerNeeded(`prop_police_id_board`)
 	SetModelAsNoLongerNeeded(`prop_police_id_text`)
