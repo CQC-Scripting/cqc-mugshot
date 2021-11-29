@@ -1,6 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local mugshotInProgress, createdCamera, MugshotArray, playerData = false, 0, {}, nil
-local handle, board, board_scaleform, overlay, ped, x, y, z, r, suspectheading, suspectx, suspecty, suspectz, board_pos
+local handle, board, board_scaleform, overlay, ped, pedcoords, x, y, z, r, suspectheading, suspectx, suspecty, suspectz, board_pos
 
 if Config.CustomMLO then
     x = Config.MugShotCamera.x
@@ -34,6 +34,7 @@ local function PhotoProcess(ped)
     for photo = 1, Config.Photos, 1 do
         Wait(Config.WaitTime)
         TakeMugShot()
+        PlaySoundFromCoord(-1, "SHUTTER_FLASH", x, y, z, "CAMERA_FLASH_SOUNDSET", true, 5, 0)
         Wait(Config.WaitTime)
         rotation = rotation - 90.0
         SetEntityHeading(ped, rotation)
@@ -53,6 +54,7 @@ local function MugShotCamera()
     createdCamera = cam
     CreateThread(function()
         FreezeEntityPosition(ped, true)
+        SetPauseMenuActive(false)
         while mugshotInProgress do
             DisableAllControlActions(0)
             EnableControlAction(0, 249, true)
@@ -134,16 +136,13 @@ local function MakeBoard()
 	CallScaleformMethod(board_scaleform, 'SET_BOARD', title, center, footer, header, 0, 1337, 116)
 end
 
-
 local function PlayerBoard()
-    local playerCoords = GetEntityCoords(ped)
-    board_pos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
 	RequestModel(`prop_police_id_board`)
 	RequestModel(`prop_police_id_text`)
 	RequestAnimDict(lineup_male)
 	while not HasModelLoaded(`prop_police_id_board`) or not HasModelLoaded(`prop_police_id_text`) do Wait(1) end
-	board = CreateObject(`prop_police_id_board`, board_pos, false, true, false)
-	overlay = CreateObject(`prop_police_id_text`, board_pos, false, true, false)
+	board = CreateObject(`prop_police_id_board`, pedcoords, true, true, false)
+	overlay = CreateObject(`prop_police_id_text`, pedcoords, true, true, false)
 	AttachEntityToEntity(overlay, board, -1, 4103, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
 	SetModelAsNoLongerNeeded(`prop_police_id_board`)
 	SetModelAsNoLongerNeeded(`prop_police_id_text`)
