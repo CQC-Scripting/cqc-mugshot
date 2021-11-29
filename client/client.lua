@@ -1,9 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local mugshotInProgress, createdCamera, MugshotArray, playerData = false, 0, {}, nil
-local handle, board, board_scaleform, overlay, ped, x, y, z, r, suspectheading, suspectx, suspecty, suspectz
-local player = GetPlayerPed(PlayerPedId())
-local playerCoords = GetEntityCoords(player)
-local board_pos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
+local handle, board, board_scaleform, overlay, ped, x, y, z, r, suspectheading, suspectx, suspecty, suspectz, board_pos
 
 if Config.CustomMLO then
     x = Config.MugShotCamera.x
@@ -139,6 +136,8 @@ end
 
 
 local function PlayerBoard()
+    local playerCoords = GetEntityCoords(ped)
+    board_pos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
 	RequestModel(`prop_police_id_board`)
 	RequestModel(`prop_police_id_text`)
 	RequestAnimDict(lineup_male)
@@ -196,7 +195,6 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
             TriggerServerEvent('cqc-mugshot:server:MDTupload', playerData.citizenid, MugshotArray)
         end
         if Config.CustomMLO == false then
-            print(pedcoords)
             SetEntityCoords(ped, pedcoords.x, pedcoords.y, pedcoords.z)
         end
         mugshotInProgress = false
