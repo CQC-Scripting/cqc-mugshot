@@ -8,7 +8,7 @@ CQC-Mugshot is a mugshot system for use with QB servers to allow players to take
 2. Add The Following Line to qb-target>config.lua change the location etc as needed
 
 ```lua
--- CC-Fuel
+-- CC-Mugshot
 ['CQCMugshot'] = {
 		name = 'CQCMugshot',
 		coords = vector3(-556.26, -132.99, 33.75),
