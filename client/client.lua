@@ -34,6 +34,7 @@ local function PhotoProcess(ped)
     for photo = 1, Config.Photos, 1 do
         Wait(Config.WaitTime)
         TakeMugShot()
+        PlaySoundFromCoord(-1, "SHUTTER_FLASH", x, y, z, "CAMERA_FLASH_SOUNDSET", true, 5, 0)
         Wait(Config.WaitTime)
         rotation = rotation - 90.0
         SetEntityHeading(ped, rotation)
