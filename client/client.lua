@@ -53,6 +53,7 @@ local function MugShotCamera()
     createdCamera = cam
     CreateThread(function()
         FreezeEntityPosition(ped, true)
+        SetPauseMenuActive(false)
         while mugshotInProgress do
             DisableAllControlActions(0)
             EnableControlAction(0, 249, true)
