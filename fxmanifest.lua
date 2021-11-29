@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
  
 description 'cqc-mugshot'
-version '1.0.1'
+version '1.0.2'
 author 'CQC DEVELOPMENT'
 
 shared_script 'config.lua'
