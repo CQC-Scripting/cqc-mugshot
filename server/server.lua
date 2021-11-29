@@ -8,7 +8,6 @@ end)
 
 RegisterNetEvent('cqc-mugshot:server:MDTupload', function(citizenid, MugShotURLs)
     MugShots[citizenid] = MugShotURLs
-
     if Config.CQCMDT then
         TriggerEvent('cqc-mdt:server:updateMugShotForCitizen',citizenid, MugShotURLs)
     end
