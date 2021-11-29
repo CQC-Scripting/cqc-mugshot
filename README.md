@@ -46,6 +46,8 @@ CQC-Mugshot is a mugshot system for use with QB servers to allow players to take
 - Mugshot Board with players information on
 - Automatically takes and uploads the images to a discord webhook
 - Highly configurable
+- Supports all MLOs via the config also has an option for no MLO's which TP's suspects to an IPL and back
+- QB Callback to request latest mugshots on that session for a citizenID
 
 
 <h2>NOTE</h2>
