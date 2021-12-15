@@ -1,4 +1,5 @@
 # CQC-MUGSHOT
+![Banner](https://user-images.githubusercontent.com/89382232/146275315-47638b67-0eba-4c42-acff-2cea8693b7a6.png)
 
 CQC-Mugshot is a mugshot system for use with QB servers to allow players to take pictures of suspects and then have them uploaded to a webhook.
 <br>
