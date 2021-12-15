@@ -6,7 +6,7 @@ CQC-Mugshot is a mugshot system for use with QB servers to allow players to take
 <h1>INSTALLATION GUIDE</h1>
 
 1. Add the cqc-mugshot folder into your resources folder
-2. Add The Following Line to qb-target>config.lua change the location etc as needed
+2. Add The Following Line to qb-target>config.lua>Config.BoxZones (**change the location etc as needed**)
 
 ```lua
 -- CQC-Mugshot
