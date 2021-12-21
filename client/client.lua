@@ -139,8 +139,9 @@ end
 local function PlayerBoard()
 	RequestModel(`prop_police_id_board`)
 	RequestModel(`prop_police_id_text`)
-	RequestAnimDict(lineup_male)
-	while not HasModelLoaded(`prop_police_id_board`) or not HasModelLoaded(`prop_police_id_text`) do Wait(1) end
+	while not HasModelLoaded(`prop_police_id_board`) or not HasModelLoaded(`prop_police_id_text`) do 
+        Wait(1) 
+    end
 	board = CreateObject(`prop_police_id_board`, pedcoords, true, true, false)
 	overlay = CreateObject(`prop_police_id_text`, pedcoords, true, true, false)
 	AttachEntityToEntity(overlay, board, -1, 4103, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
@@ -172,10 +173,7 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
         MugshotArray, mugshotInProgress = {}, true
         local citizenid = playerData.citizenid
         local animDict = 'mp_character_creation@lineup@male_a'
-        RequestAnimDict(animDict)
-        while not HasAnimDictLoaded(animDict) do
-            Wait(100)
-        end
+        QBCore.Functions.RequestAnimDict(animDict)
         PrepBoard()
         Wait(250)
         MakeBoard()
