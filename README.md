@@ -1,14 +1,15 @@
 # CQC-MUGSHOT
+![Banner](https://user-images.githubusercontent.com/89382232/146275315-47638b67-0eba-4c42-acff-2cea8693b7a6.png)
 
 CQC-Mugshot is a mugshot system for use with QB servers to allow players to take pictures of suspects and then have them uploaded to a webhook.
 <br>
 <h1>INSTALLATION GUIDE</h1>
 
 1. Add the cqc-mugshot folder into your resources folder
-2. Add The Following Line to qb-target>config.lua change the location etc as needed
+2. Add The Following Line to qb-target>config.lua>Config.BoxZones (**change the location etc as needed**)
 
 ```lua
--- CC-Fuel
+-- CQC-Mugshot
 ['CQCMugshot'] = {
 		name = 'CQCMugshot',
 		coords = vector3(-556.26, -132.99, 33.75),
