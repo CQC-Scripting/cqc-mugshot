@@ -199,11 +199,10 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
 end)
 
 RegisterNetEvent("cqc-mugshot:client:takemugshot",function()
-        local player, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
-        if player ~= -1 and distance < 2.0 then
-            local playerId = GetPlayerServerId(player)
-            TriggerServerEvent('cqc-mugshot:server:triggerSuspect', playerId)
-        end
+    local player, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
+    if player ~= -1 and distance < 2.0 then
+        local playerId = GetPlayerServerId(player)
+        TriggerServerEvent('cqc-mugshot:server:triggerSuspect', playerId)
     end
 end)
 
