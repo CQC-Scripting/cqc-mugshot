@@ -27,13 +27,8 @@ CQC-Mugshot is a mugshot system for use with QB servers to allow players to take
 					['police'] = 0,
 					['sast'] = 0,
 				},
-				action = function()
-					local player, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
-                    if player ~= -1 and distance < 2.0 then
-                        local playerId = GetPlayerServerId(player)
-						TriggerServerEvent('cqc-mugshot:server:triggerSuspect', playerId)
-					end
-				end,
+				event = 'cqc-mugshot:client:takemugshot',
+				type = 'client'
 			},
 		},
 		distance = 2.0,

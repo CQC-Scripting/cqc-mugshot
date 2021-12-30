@@ -198,6 +198,15 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
     end)
 end)
 
+RegisterNetEvent("cqc-mugshot:client:takemugshot",function()
+        local player, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
+        if player ~= -1 and distance < 2.0 then
+            local playerId = GetPlayerServerId(player)
+            TriggerServerEvent('cqc-mugshot:server:triggerSuspect', playerId)
+        end
+    end
+end)
+
 if Config.TestCommand then
     RegisterCommand("testmugshot", function(source)
         local player, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
