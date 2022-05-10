@@ -1,9 +1,9 @@
 Config = {}
 
-Config.Webhook = '' -- Images will be uploaded here
+Config.Webhook = 'https://discord.com/api/webhooks/913767420794122240/3f_yIYDco5z4m_8IabNZ27b2z3X8zvW7nGgCHWvjjU_8_zlzSrfh-kDdA3daluJcXxn5' -- Images will be uploaded here
 Config.TestCommand = false -- Use this when testing /testmugshot
 
-Config.CustomMLO = false -- If you use a MLO use the options below to change the camera location. Otherwise it will use the default IPL for the mugshot location
+Config.CustomMLO = true -- If you use a MLO use the options below to change the camera location. Otherwise it will use the default IPL for the mugshot location
 Config.MugshotLocation = vector3(-559.81, -132.68, 32.75) -- Location of the Suspect
 Config.MugshotSuspectHeading = 291.18 -- Direction Suspsect is facing
 Config.MugShotCamera = {
@@ -15,5 +15,5 @@ Config.MugShotCamera = {
 
 Config.BoardHeader = "Los Santos Police Department" -- Header that appears on the board
 Config.WaitTime = 2000 -- Time before and after the photo is taken. Decreasing this value might result in some angles being skiped.
-Config.Photos = 3 -- Front, Back Side. Use 4 for both sides
-Config.CQCMDT = false -- If you use CQC MDT this will automatically send them to a players profile
+Config.Photos = 4 -- Front, Back Side. Use 4 for both sides
+Config.CQCMDT = true -- If you use CQC MDT this will automatically send them to a players profile
