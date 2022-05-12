@@ -1,0 +1,34 @@
+# This is a basic workflow to help you get started with Actions
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Runs the commands listed below when something is pushed to live branch
+  push:
+    branches: [ live ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # Run on our box
+    runs-on: self-hosted
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Run the list of commands we need to ensure the repository is pulled correctly
+      - name: Go to repo folder and run fetch and pull
+        shell: cmd
+        run: |
+          cd C:\quantumlive
+          echo ${{ github.event.repository.name }}
+          for /f "delims=" %%a in ('DIR /AD /B /S "${{ github.event.repository.name }}"') do cd %%a
+          git stash
+          git fetch
+          git checkout live
+          git pull
