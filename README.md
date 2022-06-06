@@ -28,7 +28,7 @@ CQC-Mugshot is a mugshot system for use with QB servers to allow players to take
 					['sast'] = 0,
 				},
 				event = 'cqc-mugshot:client:takemugshot',
-				type = 'client'
+				type = 'client',
 			},
 		},
 		distance = 2.0,
