@@ -178,14 +178,14 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
         Wait(250)
         MakeBoard()
         MugShotCamera()
-        SetEntityCoords(ped, suspectx, suspecty, suspectz)
-        SetEntityHeading(ped, suspectheading)
+        SetEntityCoords(ped,suspectx, suspecty, suspectz)
+        SetEntityHeading(ped,suspectheading)
         PlayerBoard()
         TaskPlayAnim(ped, animDict, "loop_raised", 8.0, 8.0, -1, 49, 0, false, false, false)
         PhotoProcess(ped)
         if createdCamera ~= 0 then
             DestoryCamera()
-            SetEntityHeading(ped, suspectheading)
+            SetEntityHeading(suspectheading, ped)
             ClearPedSecondaryTask(GetPlayerPed(ped))
         end
         if Config.CQCMDT then
@@ -196,6 +196,14 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
         end
         mugshotInProgress = false
     end)
+end)
+
+RegisterNetEvent("cqc-mugshot:client:takemugshot",function()
+    local player, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
+    if player ~= -1 and distance < 2.0 then
+        local playerId = GetPlayerServerId(player)
+        TriggerServerEvent('cqc-mugshot:server:triggerSuspect', playerId)
+    end
 end)
 
 if Config.TestCommand then
