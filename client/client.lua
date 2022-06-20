@@ -185,7 +185,7 @@ RegisterNetEvent('cqc-mugshot:client:trigger', function()
         PhotoProcess(ped)
         if createdCamera ~= 0 then
             DestoryCamera()
-            SetEntityHeading(suspectheading, ped)
+            SetEntityHeading(ped, suspectheading)
             ClearPedSecondaryTask(GetPlayerPed(ped))
         end
         if Config.CQCMDT then
