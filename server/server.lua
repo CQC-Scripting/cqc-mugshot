@@ -14,6 +14,6 @@ RegisterNetEvent('cqc-mugshot:server:MDTupload', function(citizenid, MugShotURLs
 end)
 
 --Allows external resources to pull most recent mugshot urls for a given citizen id
-QBCore.Functions.CreateCallback(function(source, cb, citizenid) 
+QBCore.Functions.CreateCallback(function(cb, citizenid)
     cb(MugShots[citizenid])
 end)

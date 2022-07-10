@@ -1,26 +1,27 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local mugshotInProgress, createdCamera, MugshotArray, playerData = false, 0, {}, nil
-local handle, board, board_scaleform, overlay, ped, pedcoords, x, y, z, r, suspectheading, suspectx, suspecty, suspectz, board_pos
 
-if Config.CustomMLO then
-    x = Config.MugShotCamera.x
-    y = Config.MugShotCamera.y
-    z = Config.MugShotCamera.z
-    r = Config.MugShotCamera.r
-    suspectheading = Config.MugshotSuspectHeading
-    suspectx = Config.MugshotLocation.x
-    suspecty = Config.MugshotLocation.y
-    suspectz = Config.MugshotLocation.z
-else
-    x = 403.0
-    y = -998.08
-    z = -98.5
-    r = {x = 0.0, y = 0.0, z = 359.66}
-    suspectheading = 179.99
-    suspectx = 403.01
-    suspecty = -996.3
-    suspectz = -100.0
-end
+local mugshotInProgress, createdCamera, MugshotArray
+
+local PoliceTextBoard = 'prop_police_id_text'
+local PoliceIDBoard = 'prop_police_id_board'
+
+local x = Config.MugShotCamera.x
+local y = Config.MugShotCamera.y
+local z = Config.MugShotCamera.z
+local r = Config.MugShotCamera.r
+local suspectheading = Config.MugshotSuspectHeading
+local suspectx = Config.MugshotLocation.x
+local suspecty = Config.MugshotLocation.y
+local suspectz = Config.MugshotLocation.z
+
+local CMx = 403.0
+local CMy = -998.08
+local CMz = -98.5
+local CMr = {x = 0.0, y = 0.0, z = 359.66}
+local CMsuspectheading = 179.99
+local CMsuspectx = 403.01
+local CMsuspecty = -996.3
+local CMsuspectz = -100.0
 
 local function TakeMugShot()
     exports['screenshot-basic']:requestScreenshotUpload(Config.Webhook, 'files[]', {encoding = 'jpg'}, function(data)
@@ -29,9 +30,14 @@ local function TakeMugShot()
     end)
 end
 
-local function PhotoProcess(ped)
-    local rotation = suspectheading
-    for photo = 1, Config.Photos, 1 do
+local function PhotoProcess()
+    local ped = PlayerPedId()
+    if Config.CustomMLO == true then
+        rotation = suspectheading
+    else
+        rotation = CMsuspectheading
+    end
+    for _ = 1, Config.Photos, 1 do
         Wait(Config.WaitTime)
         TakeMugShot()
         PlaySoundFromCoord(-1, "SHUTTER_FLASH", x, y, z, "CAMERA_FLASH_SOUNDSET", true, 5, 0)
@@ -42,13 +48,19 @@ local function PhotoProcess(ped)
 end
 
 local function MugShotCamera()
+    local ped = PlayerPedId()
     if createdCamera ~= 0 then
         DestroyCam(createdCamera, 0)
         createdCamera = 0
     end
     local cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", 1)
-    SetCamCoord(cam, x, y, z)
-    SetCamRot(cam, r.x, r.y, r.z, 2)
+    if Config.CustomMLO == false then
+        SetCamCoord(cam, x, y, z)
+        SetCamRot(cam, r.x, r.y, r.z, 2)
+    else
+        SetCamCoord(cam, CMx, CMy, CMz)
+        SetCamRot(cam, CMr.x, CMr.y, CMr.z, 2)
+    end
     RenderScriptCams(1, 0, 0, 1, 1)
     Wait(250)
     createdCamera = cam
@@ -92,7 +104,7 @@ local function CallScaleformMethod (scaleform, method, ...)
 	local t
 	local args = { ... }
 	BeginScaleformMovieMethod(scaleform, method)
-	for k, v in ipairs(args) do
+	for _, v in ipairs(args) do
 		t = type(v)
 		if t == 'string' then
 			PushScaleformMovieMethodParameterString(v)
@@ -109,10 +121,16 @@ local function CallScaleformMethod (scaleform, method, ...)
 	EndScaleformMovieMethod()
 end
 
-local function PrepBoard()
+RegisterNetEvent('cqc-mugshot:client:trigger', function()
+    local ped = PlayerPedId()
+    local pedcoords = GetEntityCoords(ped)
     CreateThread(function()
-        board_scaleform = LoadScaleform("mugshot_board_01")
-        handle = CreateNamedRenderTargetForModel("ID_Text", `prop_police_id_text`)
+        local playerData = QBCore.Functions.GetPlayerData()
+        MugshotArray, mugshotInProgress = {}, true
+        local animDict = 'mp_character_creation@lineup@male_a'
+        QBCore.Functions.RequestAnimDict(animDict)
+        local board_scaleform = LoadScaleform("mugshot_board_01")
+        local handle = CreateNamedRenderTargetForModel("ID_Text", PoliceTextBoard)
         while handle do
             HideHudAndRadarThisFrame()
             SetTextRenderId(handle)
@@ -125,74 +143,58 @@ local function PrepBoard()
             SetScriptGfxDrawBehindPausemenu(0)
             Wait(0)
         end
-    end)
-end
-
-local function MakeBoard()
-    title = Config.BoardHeader
-    center = playerData.charinfo.firstname.. " ".. playerData.charinfo.lastname
-    footer = playerData.citizenid
-    header = playerData.charinfo.birthdate
-	CallScaleformMethod(board_scaleform, 'SET_BOARD', title, center, footer, header, 0, 1337, 116)
-end
-
-local function PlayerBoard()
-	RequestModel(`prop_police_id_board`)
-	RequestModel(`prop_police_id_text`)
-	while not HasModelLoaded(`prop_police_id_board`) or not HasModelLoaded(`prop_police_id_text`) do 
-        Wait(1) 
-    end
-	board = CreateObject(`prop_police_id_board`, pedcoords, true, true, false)
-	overlay = CreateObject(`prop_police_id_text`, pedcoords, true, true, false)
-	AttachEntityToEntity(overlay, board, -1, 4103, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
-	SetModelAsNoLongerNeeded(`prop_police_id_board`)
-	SetModelAsNoLongerNeeded(`prop_police_id_text`)
-    SetCurrentPedWeapon(ped, `weapon_unarmed`, 1)
-	ClearPedWetness(ped)
-	ClearPedBloodDamage(ped)
-	AttachEntityToEntity(board, ped, GetPedBoneIndex(ped, 28422), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 2, 1)
-end
-
-local function DestoryCamera()
-    DestroyCam(createdCamera, 0)
-    RenderScriptCams(0, 0, 1, 1, 1)
-    SetFocusEntity(GetPlayerPed(ped))
-    ClearPedTasksImmediately(ped)
-    FreezeEntityPosition(ped, false)
-    DeleteObject(overlay)
-    DeleteObject(board)
-    handle = nil
-    createdCamera = 0
-end
-
-RegisterNetEvent('cqc-mugshot:client:trigger', function()
-    ped = PlayerPedId()
-    pedcoords = GetEntityCoords(ped)
-    CreateThread(function()
-        playerData = QBCore.Functions.GetPlayerData()
-        MugshotArray, mugshotInProgress = {}, true
-        local citizenid = playerData.citizenid
-        local animDict = 'mp_character_creation@lineup@male_a'
-        QBCore.Functions.RequestAnimDict(animDict)
-        PrepBoard()
         Wait(250)
-        MakeBoard()
+        local title = Config.BoardHeader
+        local center = playerData.charinfo.firstname.. " ".. playerData.charinfo.lastname
+        local footer = playerData.citizenid
+        local header = playerData.charinfo.birthdate
+        CallScaleformMethod(board_scaleform, 'SET_BOARD', title, center, footer, header, 0, 1337, 116)
         MugShotCamera()
-        SetEntityCoords(ped,suspectx, suspecty, suspectz)
-        SetEntityHeading(ped,suspectheading)
-        PlayerBoard()
+        if Config.CustomMLO == true then
+            SetEntityCoords(ped, CMsuspectx, CMsuspectz, CMsuspecty)
+            SetEntityHeading(ped, CMsuspectheading)
+        else
+            SetEntityCoords(ped, suspectx, suspectz, suspecty)
+            SetEntityHeading(ped, suspectheading)
+        end
+        RequestModel(PoliceIDBoard)
+        RequestModel(PoliceTextBoard)
+        while not HasModelLoaded(PoliceIDBoard) or not HasModelLoaded(PoliceTextBoard) do
+            Wait(1)
+        end
+        local board = CreateObject(PoliceIDBoard, pedcoords, true, true, false)
+        local overlay = CreateObject(PoliceTextBoard, pedcoords, true, true, false)
+        AttachEntityToEntity(overlay, board, -1, 4103, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
+        SetModelAsNoLongerNeeded(PoliceIDBoard)
+        SetModelAsNoLongerNeeded(PoliceTextBoard)
+        SetCurrentPedWeapon(ped, 'weapon_unarmed', 1)
+        ClearPedWetness(ped)
+        ClearPedBloodDamage(ped)
+        AttachEntityToEntity(board, ped, GetPedBoneIndex(ped, 28422), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 2, 1)
         TaskPlayAnim(ped, animDict, "loop_raised", 8.0, 8.0, -1, 49, 0, false, false, false)
         PhotoProcess(ped)
         if createdCamera ~= 0 then
-            DestoryCamera()
-            SetEntityHeading(suspectheading, ped)
+            DestroyCam(createdCamera, 0)
+            RenderScriptCams(0, 0, 1, 1, 1)
+            SetFocusEntity(GetPlayerPed(ped))
+            ClearPedTasksImmediately(ped)
+            FreezeEntityPosition(ped, false)
+            DeleteObject(overlay)
+            DeleteObject(board)
+            handle = nil
+            createdCamera = 0
+            if Config.CustomMLO == true then
+                SetEntityHeading(ped, CMsuspectheading)
+            else
+                SetEntityHeading(ped, suspectheading)
+            end
             ClearPedSecondaryTask(GetPlayerPed(ped))
         end
         if Config.CQCMDT then
             TriggerServerEvent('cqc-mugshot:server:MDTupload', playerData.citizenid, MugshotArray)
         end
         if Config.CustomMLO == false then
-            SetEntityCoords(ped, pedcoords.x, pedcoords.y, pedcoords.z)
+            SetEntityCoords(ped, pedcoords.x, pedcoords.z, pedcoords.y)
         end
         mugshotInProgress = false
     end)
@@ -207,14 +209,14 @@ RegisterNetEvent("cqc-mugshot:client:takemugshot",function()
 end)
 
 if Config.TestCommand then
-    RegisterCommand("testmugshot", function(source)
+    RegisterCommand("testmugshot", function()
         local player, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
         if player ~= -1 and distance < 2.0 then
             local playerId = GetPlayerServerId(player)
             TriggerServerEvent('cqc-mugshot:server:triggerSuspect', playerId)
         end
     end, false)
-    RegisterCommand("testmugshotself", function(source)
+    RegisterCommand("testmugshotself", function()
         TriggerEvent('cqc-mugshot:client:trigger')
     end, false)
 end
